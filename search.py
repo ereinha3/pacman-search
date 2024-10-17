@@ -87,7 +87,42 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    # Create a stack from the utils-declared Class
+    myStack = util.Stack()
+
+    # Get the start state of the problem
+    startState = problem.getStartState()
+
+    # Add the start state and the list of actions to get there to the stack
+    myStack.push((startState, []))
+
+    # Declare an array to hold all visited states so that each state is only explored once
+    visited = []
+
+    # Continue searching for a solution until all paths have been explored (if a solution exists it will be found and loop will end with return)
+    while not myStack.isEmpty():
+
+        # Unpack state and action sequence from stored element in stack
+        state, actionSequence = myStack.pop()
+
+        # If the current state is already at the goal, we have finished and can return the action sequence to get there
+        if problem.isGoalState(state):
+            return actionSequence
+        
+        # Each successor should return a list of triples, (successor, action, stepCost)
+        if state not in visited:
+
+            # Add this state to the array of visited states so that it won't appear later
+            visited.append(state)
+
+            # Iteratively unpack the attributes of each stored successor (we don't need stepCost for DFS so we can ignore it with _)
+            for successor, action, _ in problem.getSuccessors(state):
+
+                # Add the successor and the action sequence to get there from start to the stack
+                myStack.push((successor, actionSequence + [action]))
+
+    return
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
