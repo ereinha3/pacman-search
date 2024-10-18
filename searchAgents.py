@@ -511,21 +511,12 @@ class ClosestDotSearchAgent(SearchAgent):
         gameState.
         """
         # Here are some useful elements of the startState
-        (x,y) = gameState.getPacmanPosition()
-        food = gameState.getFood()
+        pacPos = gameState.getPacmanPosition()
+        food = gameState.getFood().asList()
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
-        actionList = []
-        if x < walls.width and not walls[x+1][y]:
-            actionList.append(Directions.EAST)
-        if x > 0 and not walls[x-1][y]:
-            actionList.append(Directions.WEST)
-        if y < walls.height and not  walls[x][y+1]:
-            actionList.append(Directions.NORTH)
-        if y > 0 and not walls[x][y-1]:
-            actionList.append(Directions.SOUTH)
 
-        return actionList
+        return search.breadthFirstSearch(problem)
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -559,8 +550,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         complete the problem definition.
         """
         x,y = state
-        foodList = self.food.asList()
-        return len(foodList) == 0
+        return self.food[x][y]
 
 def mazeDistance(point1: Tuple[int, int], point2: Tuple[int, int], gameState: pacman.GameState) -> int:
     """
