@@ -122,17 +122,85 @@ def depthFirstSearch(problem: SearchProblem):
                 # Add the successor and the action sequence to get there from start to the stack
                 myStack.push((successor, actionSequence + [action]))
 
-    return
+    return []
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Create a queue from the utils-declared Class
+    myQueue = util.Queue()
+
+    # Get the start state of the problem
+    startState = problem.getStartState()
+
+    # Add the start state and the list of actions to get there to the stack
+    myQueue.push((startState, []))
+
+    # Declare an array to hold all visited states so that each state is only explored once
+    visited = []
+
+    # Continue searching for a solution until all paths have been explored (if a solution exists it will be found and loop will end with return)
+    while not myQueue.isEmpty():
+
+        # Unpack state and action sequence from stored element in stack
+        state, actionSequence = myQueue.pop()
+
+        # If the current state is already at the goal, we have finished and can return the action sequence to get there
+        if problem.isGoalState(state):
+            return actionSequence
+        
+        # Each successor should return a list of triples, (successor, action, stepCost)
+        if state not in visited:
+
+            # Add this state to the array of visited states so that it won't appear later
+            visited.append(state)
+
+            # Iteratively unpack the attributes of each stored successor (we don't need stepCost for DFS so we can ignore it with _)
+            for successor, action, _ in problem.getSuccessors(state):
+
+                # Add the successor and the action sequence to get there from start to the stack
+                myQueue.push((successor, actionSequence + [action]))
+
+    return []
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    myPriorityQueue = util.PriorityQueue()
+
+    # Get the start state of the problem
+    startState = problem.getStartState()
+
+    # Add the start state and the list of actions to get there to the stack
+    myPriorityQueue.push((startState, [], 0), 0)
+
+    # Declare an array to hold all visited states so that each state is only explored once
+    visited = []
+
+    # Continue searching for a solution until all paths have been explored (if a solution exists it will be found and loop will end with return)
+    while not myPriorityQueue.isEmpty():
+
+        # Unpack state and action sequence from stored element in stack
+        state, actionSequence, backCost = myPriorityQueue.pop()
+
+        # If the current state is already at the goal, we have finished and can return the action sequence to get there
+        if problem.isGoalState(state):
+            return actionSequence
+        
+        # Each successor should return a list of triples, (successor, action, stepCost)
+        if state not in visited:
+
+            # Add this state to the array of visited states so that it won't appear later
+            visited.append(state)
+
+            # Iteratively unpack the attributes of each stored successor (we don't need stepCost for DFS so we can ignore it with _)
+            for successor, action, pathCost in problem.getSuccessors(state):
+
+                # Add the successor and the action sequence to get there from start to the stack
+                myPriorityQueue.push((successor, actionSequence + [action], backCost + pathCost), backCost + pathCost)
+
+    return []
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -144,7 +212,42 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    myPriorityQueue = util.PriorityQueue()
+
+    # Get the start state of the problem
+    startState = problem.getStartState()
+
+    # Add the start state and the list of actions to get there to the stack
+    myPriorityQueue.push((startState, [], 0), heuristic(startState, problem))
+
+    # Declare an array to hold all visited states so that each state is only explored once
+    visited = []
+
+    # Continue searching for a solution until all paths have been explored (if a solution exists it will be found and loop will end with return)
+    while not myPriorityQueue.isEmpty():
+
+        # Unpack state and action sequence from stored element in stack
+        state, actionSequence, backCost = myPriorityQueue.pop()
+
+        # If the current state is already at the goal, we have finished and can return the action sequence to get there
+        if problem.isGoalState(state):
+            return actionSequence
+        
+        # Each successor should return a list of triples, (successor, action, stepCost)
+        if state not in visited:
+
+            # Add this state to the array of visited states so that it won't appear later
+            visited.append(state)
+
+            # Iteratively unpack the attributes of each stored successor (we don't need stepCost for DFS so we can ignore it with _)
+            for successor, action, pathCost in problem.getSuccessors(state):
+
+                # Add the successor and the action sequence to get there from start to the stack
+                myPriorityQueue.push((successor, actionSequence + [action], backCost + pathCost), backCost + pathCost + heuristic(successor, problem))
+
+    return []
+
+
 
 
 # Abbreviations
